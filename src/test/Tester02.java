@@ -7,9 +7,6 @@ import mmcardds.MMCards;
 public class Tester02 {
 
 	public static void main(String[] args) {
-		MMCards game = new MMCards();
-		
-		 
+		MMCards game = new MMCards();		 
 	}
-
 }

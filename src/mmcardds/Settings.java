@@ -10,7 +10,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
-import java.text.Format;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -31,32 +30,23 @@ public class Settings extends JPanel implements ActionListener, MouseListener {
 	int [] selected = new int[2];
 	int count = 0;
 	int index;
-	
 	Card [] card;
 	int cardSize = 26;
-	String [] lol= {"Ahri 1280X1280", "akali", "darius", "ezeal", "Jinx 1280x1280", "kaisa", "lux",
-				    "missFortune", "rakan", "seraphine", "xayah", "zyra", 
-				    "boom1"};  
-	
-	//BIẾN THỜI GIAN CHƠI XONG 
-	long complTime = 0;
-	//BIẾN SAVE NAME'S PLAYER
-	String playerName = "Player";
+	String [] lol= {"ahri", "akali", "darius", "ezreal", "jinx", "kaisa", "lux",
+				    "missfortune", "rakan", "seraphine", "xayah", "zyra", 
+				    "boom"};  
 
-    int score = 0;
-    // Biến để lưu giá trị điểm tăng thêm cho mỗi cặp thẻ đúng
-    int scoreIncrement = 10;
+	long complTime = 0;	
+	int dem = 0;
 	
 	private JLabel timerLabel; // label hiện thời gian
-	
-	int flippedCardsCount = 0;
 
-	
 	public Settings() {
 		card = new Card[cardSize];
 		
-		List<String> shuffled_list = Arrays.asList(lol);
+		List<String> shuffled_list = Arrays.asList(lol);		
 		Collections.shuffle(shuffled_list);
+
 
 		for (int i=0; i<cardSize; i++) {			
 			card[i] = new Card(lol[i%13], i);			
@@ -74,11 +64,7 @@ public class Settings extends JPanel implements ActionListener, MouseListener {
 		addMouseListener(this);
 		timer = new Timer(10, this);
         timer.start();
-        
-        	  // LẬT THẺ(biến)
-        boolean flip = false;
-        
-		 		// SET BACKGROUND 
+
 		try {
 			background = ImageIO.read(new File("./src/images/background02.jpg"));
 		} catch (IOException e) {
@@ -108,38 +94,19 @@ public class Settings extends JPanel implements ActionListener, MouseListener {
 			g.drawImage(card[i].getPicture(), card[i].getX(), card[i].getY(), 
 						card[i].getWidth(), card[i].getHeight(), null);
 
-		}
-		
+		}		
 		Font kiten = new Font("Forte", Font.BOLD, 40);
 		g.setFont(kiten);
 		g.setColor(Color.MAGENTA);
 		g.drawString("DMinh_MDuy_Hung", 100, 750);
-
-		
 		Font playerFont = new Font("Cambria", Font.BOLD, 24);
 	    g.setFont(playerFont);
 	    g.setColor(Color.WHITE);
-	    g.drawString("Player: "+ MMCards.PLAYER, 950, 750);
-		
-    
-	}
-	
-	private void calculateScore() {
-        long seconds = (int) (complTime /1000);
-        score = 0;
-        if (seconds <=10) {
-            score += 10;
-        }
-        if (seconds >10 && seconds <=20) {
-            score += 5;
-        }
-        else if (seconds > 20) {
-            score += 1;
-        }
-    }
-	
+	    g.drawString("Player: "+ MMCards.PLAYER, 950, 750);    
+	}	
+
 	private String formatTime(long timeMillis) {
-        long elapsedSeconds = timeMillis / 1000;
+        long elapsedSeconds = (int) timeMillis / 1000;
         long minutes = elapsedSeconds / 60;
         long seconds = elapsedSeconds % 60;
         return String.format("%02d:%02d", minutes, seconds);
@@ -149,72 +116,80 @@ public class Settings extends JPanel implements ActionListener, MouseListener {
 	int direction = 1;
 	@Override
 	public void actionPerformed(ActionEvent e) {
-
-		if(flip) {
-			flip = card[index].flip();
-			if(card[index].getWidth()<=0) {
-				card[index].setPicture(card[index].getLol());
-			}				
-		}	
 		
-		if (check) 
-		{
-			if(card[selected[0]].getLol() != card[selected[1]].getLol())
-			{
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e1) {
-					
-					e1.printStackTrace();
-				}			
-				card[selected[0]].setPicture("BG_cards");
-				card[selected[1]].setPicture("BG_cards");
-			}
-			check = false;
-			
-		}
-		repaint();
-		
-		if(count==2 && flip == false)
-		{
-			check = true;
-			count = 0;
-//			updateFlippedCardsCount();
-	        System.out.println("flippedCardsCount: " + flippedCardsCount);
+		if (flip) {
+            flip = card[index].flip();
+            if (card[index].getWidth() <= 0) {
+                card[index].setPicture(card[index].getLol());
+            }
+        }
 
-	        if (flippedCardsCount == cardSize * 2 && count == 0) {
-	            System.out.println("All cards flipped: " + flippedCardsCount);
-	            // Tất cả thẻ đã được lật đúng, hiển thị cửa sổ thông báo
-	            showCompletionDialog();
-	        }
+        if (check) {
+            if (!card[selected[0]].getLol().equals(card[selected[1]].getLol())) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+                card[selected[0]].setPicture("BG_cards");
+                card[selected[1]].setPicture("BG_cards");
+                dem = dem +0;
+            }
+            
+            check = false;
+        }
+        ///////////////////////////////
+        if (count == 2 && !flip) {
+            if (card[selected[0]].getLol().equals(card[selected[1]].getLol())) {
+                dem = dem +1;
+            } else {
+            	try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+                card[selected[0]].setPicture("BG_cards");
+                card[selected[1]].setPicture("BG_cards");              
+            }
+            count = 0;            
+        }
+///////////////////////////
+        repaint();
 
-		}	
-		// CẬP NHẬT THỜI GIAN 
-		updateTimer();			
-	}
-	
-	private void updateFlippedCardsCount() {
-	    flippedCardsCount += 2; // Mỗi lần lật thẻ tăng 2
-	}
+        if (count == 2 && !flip) {
+            check = true;
+            count = 0;
+        }
+
+        if (dem == 13) {
+            showCompletionDialog();
+        }
+        updateTimer();
+        
+    }
 
 	private void updateTimer() {
+		try {
 		long currentTimeMillis = System.currentTimeMillis();
 		long elapsedSeconds = (currentTimeMillis - MMCards.startTimeMillis) / 1000;
-		long mintutes = elapsedSeconds / 60;
-		long seconds = elapsedSeconds %60;
-		String timeString = String.format("%02d:%02d", mintutes, seconds);
+		complTime = currentTimeMillis - MMCards.startTimeMillis; // Cập nhật complTime
+		long minutes = elapsedSeconds / 60;
+		long seconds = elapsedSeconds % 60; 
+		String timeString = String.format("%02d:%02d", minutes, seconds);
 		timerLabel.setText(timeString);
+		 } catch (Exception e) {
+			 System.err.println("Error updating timer: " + e.getMessage());
+		    }
 	}
 	
 	private void showCompletionDialog() {
-	    
-	    calculateScore();
-
 	    String message = "Player: " + MMCards.PLAYER + "!\n"
-	            + "Finish Time: " + formatTime(complTime)
-	            + "\nYour Score: " + score;
+	            + "Finish Time: " + formatTime(complTime);
+	   
 	    JOptionPane.showMessageDialog(this, message, "Finish Game", JOptionPane.INFORMATION_MESSAGE);
 	}
+	
+	
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -223,33 +198,21 @@ public class Settings extends JPanel implements ActionListener, MouseListener {
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		flip = true;
-		direction = 1;
-		
-		for (Card the : card) {
-			if(the.collision(e.getX(), e.getY()))
-			{
-				selected[count] = the.getIndex();
-				
-				if(count==0 || (count==1 && selected[0] 
-											!= selected[1]))
-				{
-				index = the.getIndex();
-				count++;
-				}
-			}
-		}
-		// Thêm điều kiện kiểm tra giống nhau ở đây
-	    if (count == 2 && !flip) {
-	        if (!card[selected[0]].getLol().equals(card[selected[1]].getLol())) {
-	            // Thẻ không giống nhau, giảm count về 0
-	            count = 0;
+
+		 flip = true;
+	        direction = 1;
+
+	        for (Card the : card) {
+	            if (the.collision(e.getX(), e.getY())) {
+	                selected[count] = the.getIndex();
+
+	                if (count == 0 || (count == 1 && selected[0] != selected[1])) {
+	                    index = the.getIndex();
+	                    count++;
+	                }
+	            }
 	        }
 	    }
-
-		
-	}
-
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		

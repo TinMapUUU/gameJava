@@ -7,8 +7,7 @@ public class MMCards extends JFrame {
 	public static long startTimeMillis = 0;
 	static int width = 1300;
 	static int height = 870;
-	static String PLAYER="";
-	public static String MESS="";
+	static String PLAYER="";	
 	
 	public MMCards() {
 		setTitle("My Game");

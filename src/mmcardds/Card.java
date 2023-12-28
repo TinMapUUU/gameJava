@@ -41,7 +41,7 @@ public class Card {
 				return false;
 			}
 			return true;
-	}	
+	}		
 				//  VA CHẠM 	//CON TRỎ
 	public boolean collision(int x_cursor, int y_cursor) {
 	  // THẺ HÌNH CHỮ NHẬT	
@@ -49,9 +49,6 @@ public class Card {
 		
 		return cardRect.contains(x_cursor, y_cursor);
 	}	
-	
-	
-	
 	public void setPicture(String lol) {
 		try {
 			backcards = ImageIO.read(new File("./src/images/"+ lol +".jpg"));
@@ -60,13 +57,10 @@ public class Card {
 			e.printStackTrace();
 		}		
 		
-	}
-	
+	}	
 	public Image getPicture() {
 		return backcards;
 	}
-	
-	
 	public int getX() {
 		return x;
 	}
@@ -99,10 +93,5 @@ public class Card {
 	}
 	public int getIndex() {
 		return index;
-	}
-
-	public boolean isFlipped() {
-		
-		return false;
 	}	
 }
